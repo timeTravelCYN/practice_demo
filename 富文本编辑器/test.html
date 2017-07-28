@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+  <div class="textarea" id='textarea' contenteditable="true">
+    <h1 style="text-align: right;">asdfasdfdfas<span style="color: rgb(50, 194, 150);">asdfasdfjaskl</span><span style="color: rgb(50, 194, 150);">odfaskldfhjasdfa</span><span style="color: rgb(50, 194, 150);">sfsa</span></h1><div><font color="#32c296"><br></font></div><div><font color="#32c296"><br></font></div><div><font color="#32c296">askfas;lkdf;lasdkf;kasfl;kas;dlfjasdlfjaslkdfjasldjflasjdflasjdflasjdflkjasflkjsdfdfsdfsdfsdfdfdfdfsdfasdfsdfsadf</font></div>
+  </div>
+  <a class="changecolor" href="javascript:;">改变颜色</a>
+  <a class="changeright" href="javascript:;">居右</a>
+  <a class="changeDom" href="javascript:;">设置字体</a>
+  <a class="undo" href="javascript:;">撤销</a>
+  <a class="save" href="javascript:;">保存</a>
+  <script src="./jquery.1.7.2.min.js"></script>
+  <script>
+    $(".changecolor").click(function (e) {
+      e.stopPropagation();
+      var bool = document.execCommand("ForeColor", false, '#32c296');
+    })
+    $(".changeright").click(function (e) {
+      e.stopPropagation();
+      document.execCommand("justifyRight", false, null);
+    })
+    $(".changeDom").click(function (e) {
+      e.stopPropagation();
+      document.execCommand('formatBlock', false, '<h1>');
+    })
+
+    $(".undo").click(function (event) {
+      document.execCommand('Undo');
+    });
+    $(".save").click(function (event) {
+      console.log($(".textarea").html())
+    });
+  </script>
+</body>
+
+</html>
