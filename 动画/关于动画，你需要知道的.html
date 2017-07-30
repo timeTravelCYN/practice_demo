@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+    #block {
+      position: absolute;
+      left: 200px;
+      top: 200px;
+      width: 100px;
+      height: 100px;
+      background: #0c8;
+      line-height: 100px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div id="block">click me</div>
+  <script>
+    var deg = 0;
+    var block = document.getElementById("block");
+    // block.addEventListener("click", function change() {
+    //   var self = this;
+    //   requestAnimationFrame(function change(){
+    //     self.style.transform = 'rotate(' + (deg++) +'deg)';
+    //     requestAnimationFrame(change);
+    //   });
+    // })
+
+    /*
+javascript单线程非阻塞，如果任务被其他任务给阻塞了，那么动画就会变慢
+     */
+    block.addEventListener('click', function() {
+      setInterval(function() {
+        var i = 0;
+        var t = Date.now();
+        while(++i < 2000000); //模拟耗时操作
+        console.log(Date.now() - t );
+      }, 100)
+
+      var self = this;
+      requestAnimationFrame(function change() {
+        self.style.transform = 'rotate(' + (deg++) + 'deg)';
+        requestAnimationFrame(change);
+      })
+    })   //y因为有其他定时器耗时的操作， 导致动画变慢。
+    // 还有一个问题是这种动画对于匀速运动还好，做一些复杂的变速运动，会求积分时间又不连贯
+    var x = 0, y = 0;
+    block.addEventListener("click", function(){
+      var self = this;
+      requestAnimationFrame(function change(){
+        self.style.transform = "translate(" +
+          (x++) + "px," + 100 * Math.cos(Math.PI * (y++/180)) + "px)";
+        requestAnimationFrame(change);
+      });
+    });
+    /**
+     * 由于时间不连贯绘制出来的只能近似等于正弦曲线
+     */
+
+
+  </script>
+</body>
+</html>

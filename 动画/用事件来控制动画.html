@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+    #block {
+      position: absolute;
+      left: 200px;
+      top: 200px;
+      width: 100px;
+      height: 100px;
+      background: #0c8;
+      line-height: 100px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div id="block">click me</div>
+  <script>
+    var deg = 0;
+    var block = document.getElementById("block");
+    //  block.addEventListener("click", function(){
+    //    var self = this, startTime = Date.now(),
+    //        duration = 1000;
+    //    setInterval(function(){
+    //      var p = (Date.now() - startTime) / duration;
+    //      self.style.transform = "rotate(" + (360 * p) +"deg)";
+    //    }, 1000/60);
+    //  });
+    // block.addEventListener('click', function() {
+    //   var self = this, startTime = Date.now(),
+    //       distance = 200, duration = 2000;
+    //
+    //   requestAnimationFrame(function step() {
+    //     var p = Math.min(1.0, (Date.now() - startTime ) / duration );
+    //     self.style.transform = 'translateX(' + ( distance * p ) + 'px)';
+    //     if( p < 1.0 ) {
+    //       requestAnimationFrame(step);
+    //     }
+    //   })
+    // })
+    // block.addEventListener("click", function(){
+    //   var self = this, startTime = Date.now(),
+    //       distance = 400, duration = 2000;
+    //   requestAnimationFrame(function step(){
+    //     var p = Math.min(1.0, (Date.now() - startTime) / duration);
+    //     self.style.transform = "translateX(" + (distance * p * p) +"px)";
+    //     if(p < 1.0) requestAnimationFrame(step);
+    //   });
+    // });
+    block.addEventListener("click", function(){
+      var self = this, startTime = Date.now(),
+          distance = 200, duration = 2000;
+      requestAnimationFrame(function step(){
+        var p = Math.min(1.0, (Date.now() - startTime) / duration);
+        self.style.transform = "translateX("
+          + (distance * p * (2-p)) +"px)";
+        if(p < 1.0) requestAnimationFrame(step);
+      });
+    });
+
+  </script>
+</body>
+</html>

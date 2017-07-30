@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+    #block {
+      position: absolute;
+      left: 200px;
+      top: 200px;
+      width: 100px;
+      height: 100px;
+      background: #0c8;
+      line-height: 100px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div id="block">click me</div>
+  <script>
+    // 抽象出动画相关的要素：
+    //   1. 动画时长
+    //   2. 动画进程 （0 -- 1 ）   1 -代表结束
+    //   3. easing  动画方程
+    //   4. 动画声明周期
+    function Animator(duration, progress, easing) {
+      this.duration = duration;
+      this.progress = progress;
+      this.easing = easing || function(p) {return p};
+    }
+
+    Animator.prototype = {
+      start: function(finished) {
+        var startTime = Date.now();
+        var duration = this.duration;
+        var self = this;
+
+        requestAnimationFrame(function step() {
+          var p = (Date.now() - startTime) / duration;
+          var next = true;
+
+          if(p < 1.0) {
+            self.progress(self.easing(p), p);
+          }else{
+            if(typeof finished === 'function') {
+              next = finished() === false;
+            }else{
+              next = finished ===false;
+            }
+
+            if(!next) {
+              self.progress(self.easing(1.0), 1.0);
+            }else{
+              startTime += duration;
+              self.progress(self.easing(p), p);
+            }
+          }
+
+          if(next) {
+            requestAnimationFrame(step);
+          }
+        })
+      }
+    }
+
+
+    // 动画队列类
+    function AnimationQueue(animators){
+      this.animators = animators || [];
+    }
+
+    AnimationQueue.prototype = {
+      append: function(){
+        var args = [].slice.call(arguments);
+        this.animators.push.apply(this.animators, args);
+      },
+      flush: function(){
+        if(this.animators.length){
+          var self = this;
+
+          function play(){
+            var animator = self.animators.shift();
+
+            if(animator instanceof Animator){
+              animator.start(function(){
+                if(self.animators.length){
+                  play();
+                }
+              });
+            }else{
+              animator.apply(self);
+              if(self.animators.length){
+                play();
+              }
+            }
+          }
+          play();
+        }
+      }
+    };
+
+    var a1 = new Animator(1000,  function(p){
+      var tx = 100 * p;
+      block.style.transform = "translateX("
+        + tx + "px)";
+    });
+
+    var a2 = new Animator(1000,  function(p){
+      var ty = 100 * p;
+      block.style.transform = "translate(100px,"
+        + ty + "px)";
+    });
+
+    var a3 = new Animator(1000,  function(p){
+      var tx = 100 * (1-p);
+      block.style.transform = "translate("
+        + tx + "px, 100px)";
+    });
+
+    var a4 = new Animator(1000,  function(p){
+      var ty = 100 * (1-p);
+      block.style.transform = "translateY("
+        + ty + "px)";
+    });
+
+
+    block.addEventListener("click", function(){
+      var animators = new AnimationQueue();
+      animators.append(a1, a2, a3, a4);
+      animators.flush();
+    });
+  </script>
+</body>
+</html>
