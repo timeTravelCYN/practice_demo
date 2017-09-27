@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <script>
+    (function () {
+      var ua = window.navigator.userAgent;
+      var docEl = document.documentElement;
+      var html = document.querySelector('html');
+      var isAndorid = /Android/i.test(ua);
+      var dpr = window.devicePixelRatio || 1;
+      var rem = docEl.clientWidth / 6.4;
+      // 设置 rem 基准值
+      html.style.fontSize = rem + 'px';
+      // Nexus 5 上 rem 值不准，
+      // 如：设置100px，getComputedStyle 中的值却为 85px，导致页面错乱
+      // 这时需要检查设置的值和计算后的值是否一样，
+      // 不一样的话重新设置正确的值
+      var getCPTStyle = window.getComputedStyle;
+      var fontSize = parseFloat(html.style.fontSize, 10);
+      var computedFontSize = parseFloat(getCPTStyle(html)['font-size'], 10);
+      if (getCPTStyle && Math.abs(fontSize - computedFontSize) >= 1) {
+        html.style.fontSize = fontSize * (fontSize / computedFontSize) + 'px';
+      }
+      // 设置 data-dpr 属性，留作的 css hack 之用
+      html.setAttribute('data-dpr', dpr);
+
+      // 安卓平台额外加上标记类
+      if (isAndorid) {
+        html.setAttribute('data-platform', 'android');
+      }
+    })();
+  </script>
+  <style>
+    .review {
+      padding-top: .2rem;
+      padding-bottom: .1rem;
+      margin-left: .9rem;
+      font-size: .32rem;
+      color: #b85423;
+      line-height: 1.5em;
+      position: relative;
+    }
+
+    .ellipsis {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+    }
+
+    .spread {
+      padding-right: .2rem;
+      position: absolute;
+      bottom: .09rem;
+      right: 0;
+    }
+
+    .spread i {
+      width: .2266rem;
+      height: .2266rem;
+      display: inline-block;
+      vertical-align: middle;
+      background-image: url(/cdn_img/plusSprite.png);
+      background-repeat: no-repeat;
+      background-size: .2266rem .72rem;
+    }
+
+    .spread i.plus {
+      background-position: 0 0;
+    }
+
+    .spread i.reduce {
+      background-position: 0 -0.4933rem;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="review">
+    孙燕姿导师评语：这位同学唱功基础扎实，转音和高低音的切换非常自然，整首歌曲感情饱满，非常不错。整首歌曲感情饱满，非常不错。整首歌曲感情饱满，非常不错。
+  </div>
+  <script src="./jquery.min.js"></script>
+  <script>
+    $('.review').each(function (v, i) {
+      // 引入flexible.js 进行移动端适配 
+      // 根据flexible 获取rem 即 window.rem
+      console.log(i.clientHeight)
+      var rem = parseInt(document.querySelector('html').style.fontSize)
+      if (i.clientHeight > (1.27 * rem)) {
+        var el = document.createElement('span');
+        el.innerHTML = '... <i class="plus"></i>点击展开';
+        el.className = 'spread';
+        // 由于每条评论相间背景
+        el.style.backgroundColor = i % 2 == 0 ? '#ffca48' : '#ffd358';
+        i.appendChild(el);
+        // multi 是显示溢出的标志
+        $(i).addClass('ellipsis multi')
+      }
+    })
+    // 点击判断收起还是展开
+    $(document).on('click', '.multi', function (e) {
+      var $this = $(this)
+      console.log($(this).hasClass('ellipsis'))
+      if ($this.hasClass('ellipsis')) {
+        $this.removeClass('ellipsis').find('span').html('<i class="reduce"></i>点击收起');
+      } else {
+        $this.addClass('ellipsis').find('span').html('... <i class="plus"></i>点击展开');
+      }
+    })
+  </script>
+</body>
+
+
+</html>
